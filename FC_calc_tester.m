@@ -73,5 +73,5 @@ end
 
 
 % Example of how to create fuel cell files for interpolation later
-fc.weight = 363; % Pounds of fuel cell per stack
+fc.weight = 363*2.2; % Pounds of fuel cell per stack
 FC_File_Creator(fc)
