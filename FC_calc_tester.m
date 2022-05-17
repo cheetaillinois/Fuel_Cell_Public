@@ -15,6 +15,7 @@ fc.c1 = 0.175; % Stack pressurization coeff.
 fc.k = 60e-7; % 
 fc.m = 8e-5;
 fc.n = 2e-4;
+fc.deg = 0.0; % Volts
 
 % Loop for graphs of flight conditions
 for kk = 1:2
@@ -42,9 +43,20 @@ Vcell = zeros(L_sweep,1);
 Id = zeros(L_sweep,1);
 Pgross = zeros(L_sweep,1);
 P_data = zeros(L_sweep,1);
+Pnet2 = zeros(L_sweep,1);
+Eff_net2 = zeros(L_sweep,1);
+Qdot2 = zeros(L_sweep,1);
+Pcompressor2 = zeros(L_sweep,1);
+mdot_air2 = zeros(L_sweep,1);
+FC_eff2 = zeros(L_sweep,1);
+Vcell2 = zeros(L_sweep,1);
+Id2 = zeros(L_sweep,1);
+Pgross2 = zeros(L_sweep,1);
+P_data2 = zeros(L_sweep,1);
+
 fuel_sweep = linspace(0.0001,0.02,L_sweep); % Fuel flow rate in kg/sec
 
-
+fc.deg = 0;
 % Iterate over fuel flow rates
 for i = 1:101
     mdot_fuel = fuel_sweep(i);
@@ -52,10 +64,18 @@ for i = 1:101
 
 end
 
+fc.deg = 0.1;
+
+for i = 1:101
+    mdot_fuel = fuel_sweep(i);
+    [Pnet2(i),Eff_net2(i),Qdot2(i),Pcompressor2(i),mdot_air2(i),FC_eff2(i),Vcell2(i),Id2(i),Pgross2(i),P_data2(i)] = FC_calc(fc,altitude, mdot_fuel,M);
+end
+
+
 
 figure(kk)
-plot(Pgross,FC_eff,Pnet,Eff_net)
-legend('Internal Model, Gross Power','Internal Model, Net Power','Boeing Model')
+plot(Pgross,FC_eff,Pnet,Eff_net,Pnet2,Eff_net2)
+legend('Internal Model, Gross Power','Internal Model, Net Power','Degraded Model, Net Power')
 
 
 
@@ -70,6 +90,16 @@ title('Cruise')
 end
 
 end
+
+
+figure(3)
+title('Cell Performance')
+plot(Id/10000,Vcell,Id2/10000,Vcell2)
+xlabel('Current Density, ^{A}/_{cm^2}')
+ylabel('Cell Voltage')
+ylim([0,1.2])
+legend('Cell Voltage','Degraded Cell Voltage')
+
 
 
 % Example of how to create fuel cell files for interpolation later

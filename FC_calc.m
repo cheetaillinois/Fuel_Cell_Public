@@ -60,7 +60,7 @@ deltaVact = R*T_operating/(2*fc.alpha*F)*log(Id/fc.Ido);
 deltaVtrans = m*exp(Id*n);
 
 % Cell level voltage
-Vcell = eNern - deltaVohm - deltaVact - deltaVtrans;
+Vcell = eNern - deltaVohm - deltaVact - deltaVtrans - fc.deg;
 
 % Stack level calculations
 Vstack = Vcell*fc.Ncells;
